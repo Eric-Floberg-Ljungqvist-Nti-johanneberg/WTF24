@@ -2,13 +2,13 @@ class App < Sinatra::Base
 
     def db
         return @db if @db
-        @db = SQLite3::Database.new('./db/movies.sqlite')
+        @db = SQLite3::Database.new('./db/asdas.db')
         @db.results_as_hash = true
         return @db
     end
 
     get '/' do
-        @movies = db.execute('SELECT * FROM movies')
+        @movies = db.execute('SELECT * FROM movie_db')
         erb :index
     end
 
@@ -24,18 +24,18 @@ class App < Sinatra::Base
         genre = params["genre"]
         director = params["director"]
 
-        query = 'INSERT INTO movies (title, description, year, movie_image, genre, director) VALUES (?,?,?,?,?,?)'
+        query = 'INSERT INTO movie_db (title, description, year, movie_image, genre, director) VALUES (?,?,?,?,?,?)'
         db.execute(query, title, description, year, movie_image, genre, director)
         redirect "/"
     end
 
     post '/movie/remove/:id' do |id| 
-        db.execute('DELETE FROM movies WHERE id = ?', id)
+        db.execute('DELETE FROM movie_db WHERE id = ?', id)
         redirect "/"
     end
 
     get '/movie/edit/:id' do |id| 
-        @movie_info = db.execute('SELECT * FROM movies WHERE id = ?', id).first
+        @movie_info = db.execute('SELECT * FROM movie_db WHERE id = ?', id).first
         erb :edit_movie
     end
 
@@ -47,7 +47,7 @@ class App < Sinatra::Base
         genre = params["genre"]
         director = params["director"]
 
-        query = "UPDATE movies SET title = ?, description = ?, year = ?, movie_image = ?, genre = ?, director = ? WHERE id = ?"
+        query = "UPDATE movie_db SET title = ?, description = ?, year = ?, movie_image = ?, genre = ?, director = ? WHERE id = ?"
         db.execute(query, title, description, year, movie_image, genre, director, id)
         redirect '/'
     end

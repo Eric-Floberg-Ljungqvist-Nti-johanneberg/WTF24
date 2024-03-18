@@ -23,6 +23,7 @@ GEM
       rack (~> 2.2, >= 2.2.4)
       rack-protection (= 3.1.0)
       tilt (~> 2.0)
+    sqlite3 (1.6.4-x64-mingw-ucrt)
     sqlite3 (1.6.4-x86_64-linux)
     thin (1.8.2)
       daemons (~> 1.0, >= 1.0.9)
@@ -31,6 +32,7 @@ GEM
     tilt (2.2.0)
 
 PLATFORMS
+  x64-mingw-ucrt
   x86_64-linux
 
 DEPENDENCIES
