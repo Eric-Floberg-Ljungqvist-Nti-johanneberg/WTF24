@@ -12,6 +12,19 @@ class App < Sinatra::Base
         erb :index
     end
 
+    get '/register' do
+        erb :register
+    end
+
+    post '/register' do
+        username = params["username"]
+        password = params["password"]
+
+        query = 'INSERT INTO login_credentials (username, password) VALUES (?,?)'
+        db.execute(query, username, password)
+        redirect "/"
+    end
+
     get '/add_movie' do 
         erb :add_movie
     end
