@@ -10,7 +10,13 @@
     <form action='/movie/edit/<%= movie["id"] %>' method='get'>
       <button type='submit'>Edit</button>
     </form>
+
+    
   </div>
 <% end %>
 
 <a href="/add_movie">Add a Movie</a>
+<br>
+<a href="/login">Login</a>
+<p><%=session[:username] %></p>
+
