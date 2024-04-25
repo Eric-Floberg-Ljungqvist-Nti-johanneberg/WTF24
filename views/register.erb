@@ -1,5 +1,12 @@
 <form action='/register' method="POST">
-  <input type='text' name="username" placeholder="Enter Username"></input>
-  <input type='text' name="password" placeholder="Enter Password"></input>
+  <input type='text' name="username" placeholder="Enter Username" required></input>
+  <input type='text' name="password" placeholder="Enter Password" required></input>
+  <div>
+    <input type="radio" id="admin" name="role" value="admin" required>
+    <label for="admin">Admin</label>
+    <input type="radio" id="user" name="role" value="user" required>
+    <label for="user">User</label>
+  </div>
   <button type='submit'>Register Account</button>
 </form>
+

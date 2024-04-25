@@ -20,11 +20,12 @@ class App < Sinatra::Base
     post '/register' do
         username = params["username"]
         password = params["password"]
+        role = params["role"]
         
         hashed_password = BCrypt::Password.create(password)
 
-        query = 'INSERT INTO login_credentials (username, password) VALUES (?,?)'
-        db.execute(query, username, hashed_password)
+        query = 'INSERT INTO login_credentials (username, password, role) VALUES (?,?,?)'
+        db.execute(query, username, hashed_password, role)
         redirect "/"
     end
 
@@ -48,6 +49,7 @@ class App < Sinatra::Base
         if BCrypt::Password.new(hashed_password) == password
             session[:user_id] = user['id']
             session[:username] = user['username']
+            session[:role] = user['role']
             puts session[:username]
             redirect '/'
         end
