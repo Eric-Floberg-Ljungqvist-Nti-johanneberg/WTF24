@@ -8,6 +8,11 @@ class App < Sinatra::Base
         return @db
     end
 
+    get '/movie/:id' do |id|
+        @movie = db.execute("SELECT * from movie_db WHERE id = ?", id).first
+        erb :movie
+    end
+
     get '/' do
         @movies = db.execute('SELECT * FROM movie_db')
         erb :index
@@ -41,7 +46,7 @@ class App < Sinatra::Base
         user = db.execute('SELECT * FROM login_credentials WHERE username = ?', username).first
        
         if user.nil?
-            return
+            redirect '/login'
         end
 
         hashed_password = user['password']
@@ -55,38 +60,39 @@ class App < Sinatra::Base
         end
     end
 
+    get '/logout' do
+        if (session[:username])
+            session.clear
+            redirect '/'
+        end
+   end
 
     get '/add_movie' do 
         erb :add_movie
     end
     
     post '/movie/add' do
-        title = params["title"]
-        description = params["description"]
-        year = params["year"]
-        movie_image = params["movie_image"]
-        genre = params["genre"]
-        director = params["director"]
 
-        if !(movie_image == nil)
-            File.open('public/img/' + movie_image[:filename], "w") do |f|
-                f.write(movie_image[:tempfile].read)
-            end
-            image_path = "/artwork/" + movie_image[:filename]
-            puts(image_path)
-        else
-            image_path = nil
-            puts("No image path")
+        if session[:user_id]
+
+            title = params["title"]
+            description = params["description"]
+            year = params["year"]
+            genre = params["genre"]
+            director = params["director"]
+
+        
+            query = 'INSERT INTO movie_db (title, description, year, genre, director, added_id) VALUES (?,?,?,?,?,?)'
+            db.execute(query, title, description, year, genre, director, session[:user_id])
+            redirect "/"
         end
-
-        query = 'INSERT INTO movie_db (title, description, year, movie_image, genre, director) VALUES (?,?,?,?,?,?)'
-        db.execute(query, title, description, year, image_path, genre, director)
-        redirect "/"
     end
 
     post '/movie/remove/:id' do |id| 
-        db.execute('DELETE FROM movie_db WHERE id = ?', id)
-        redirect "/"
+        if session[:user_id]
+            db.execute('DELETE FROM movie_db WHERE id = ?', id)
+            redirect "/"
+        end
     end
 
     get '/movie/edit/:id' do |id| 
@@ -95,15 +101,18 @@ class App < Sinatra::Base
     end
 
     post '/movie/edit/:id' do |id| 
-        title = params["title"]
-        description = params["description"]
-        year = params["year"]
-        movie_image = params["movie_image"]
-        genre = params["genre"]
-        director = params["director"]
+        if session[:user_id]
 
-        query = "UPDATE movie_db SET title = ?, description = ?, year = ?, movie_image = ?, genre = ?, director = ? WHERE id = ?"
-        db.execute(query, title, description, year, movie_image, genre, director, id)
-        redirect '/'
+            title = params["title"]
+            description = params["description"]
+            year = params["year"]
+            genre = params["genre"]
+            director = params["director"]
+
+            query = "UPDATE movie_db SET title = ?, description = ?, year = ?, genre = ?, director = ? WHERE id = ?"
+            db.execute(query, title, description, year, genre, director, id)
+            redirect '/'
+
+        end
     end
 end

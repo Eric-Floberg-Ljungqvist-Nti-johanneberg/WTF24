@@ -1,27 +1,29 @@
 <% @movies.each do |movie| %>
   <div>
-    <p>Title: <%= movie["title"] %></p>
-    <p>Description: <%= movie["description"] %></p>
-    <p>Year: <%= movie["year"] %></p>
-    
-    <form action='/movie/remove/<%= movie["id"] %>' method='post'>
-      <button type='submit'>Remove</button>
-    </form>
-    <form action='/movie/edit/<%= movie["id"] %>' method='get'>
-      <button type='submit'>Edit</button>
-    </form>
+    <a href="/movie/<%= movie["id"] %>">
+      <p><%= movie["title"] %></p>
+    </a>
 
-    
+    <% if session[:role] == "admin" || session[:user_id] == movie["added_id"] %>
+
+      <form action='/movie/remove/<%= movie["id"] %>' method='post'>
+        <button type='submit'>Remove</button>
+      </form>
+      <form action='/movie/edit/<%= movie["id"] %>' method='get'>
+        <button type='submit'>Edit</button>
+      </form>
+
+    <% end %>
   </div>
 <% end %>
 
 <% if session[:user_id] %>
-
   <a href="/add_movie">Add a Movie</a>
-
+  <br>
+  <a href="/logout"> Log out </a>
+  <p id=user> <%=session[:username] %></p>
+<% else %>
+  <a href="/login">Login</a>
 <% end %>
 
-<br>
-<a href="/login">Login</a>
-<p><%=session[:username] %></p>
 
